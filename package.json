@@ -1,6 +1,11 @@
 {
   "name": "litetask",
   "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT"
+  "main": "webpack.config.js",
+  "license": "MIT",
+  "repository": "https://github.com/Lunnox/litetask.git",
+  "author": "lunnox <fire.lunnox@gmail.com>",
+  "scripts": {
+    "start": "webpack-dev-server"
+  }
 }

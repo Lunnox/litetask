@@ -1,15 +1,14 @@
 <template>
-    <div>
-
+    <v-layout align-space-around justify-start column>
         <task-form v-bind:tasks="tasks" :newTask="task"/>
-        <task-row v-for="task in tasks"
+        <task-row v-for="task in sortedTasks"
                 v-bind:task="task"
                 v-bind:key="task.id"
                 v-bind:editTask="editTask"
                 v-bind:deleteTask="deleteTask"
                 v-bind:tasks="tasks"/>
 
-    </div>
+    </v-layout>
 </template>
 
 <script>
@@ -27,6 +26,11 @@
             return {
                 task: null
             }
+        },
+        computed:{
+          sortedTasks(){
+              return this.tasks.sort((a,b)=>-(a.id -b.id))
+          }
         },
         methods: {
             editTask(task) {

@@ -1,20 +1,16 @@
 <template>
-    <div>
-    <input type="text" placeholder="Theme task" v-model="theme"/>
-    <input type="button" value="Add" @click="add"/>
-    </div>
+    <v-layout row>
+    <v-text-field placeholder="Theme task" v-model="theme" label="New Task"/>
+        <v-btn  @click="add">
+            Add
+        </v-btn>
+    </v-layout>
 </template>
 
 <script>
+    import {sendTask} from "utils/ws";
 
-    function getIndex(list,id){
-        for (var i=0;i<list.length;i++){
-            if(list[i].id===id){
-                return i
-            }
-        }
-        return -1
-    }
+
     export default {
         name: "TaskForm",
         props:['tasks','newTask'],
@@ -32,6 +28,11 @@
         },
         methods:{
             add() {
+                sendTask({id:this.id,theme: this.theme})
+                this.theme = ''
+                this.id = ''
+            }
+        /*     {
                 var task ={theme: this.theme}
 
                 if (this.id){
@@ -51,9 +52,8 @@
                         })
                     )
                 }
-                this.theme = ''
-                this.id = ''
-            }
+
+            }*/
         }
     }
 </script>

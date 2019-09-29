@@ -6,6 +6,8 @@ import litequest.com.litetask.domain.views.Views;
 import litequest.com.litetask.repository.TaskRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -52,5 +54,11 @@ public class TaskController {
     @DeleteMapping("{id}")
     public void delete( @PathVariable("id") Task task){
         tasks.delete(task);
+    }
+
+    @MessageMapping("/changeTask")
+    @SendTo("/topic/activity")
+    public Task changeTask(Task task){
+        return tasks.save(task);
     }
 }

@@ -28,12 +28,14 @@ public class MainController {
     @GetMapping
     public String main(Model model, @AuthenticationPrincipal User user){
         HashMap<Object, Object> data = new HashMap<>();
-
-        data.put("profile",user);
-        data.put("tasks",tasks.findAll());
-
+        if(user!=null) {
+            data.put("profile", user);
+            data.put("tasks", tasks.findAll());
+        }
         model.addAttribute("frontendData", data);
         model.addAttribute("isDevelop","dev".equals(profile));
         return "index";
     }
+
+
 }

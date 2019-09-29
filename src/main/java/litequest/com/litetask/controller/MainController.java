@@ -3,6 +3,7 @@ package litequest.com.litetask.controller;
 import litequest.com.litetask.domain.User;
 import litequest.com.litetask.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +16,10 @@ import java.util.HashMap;
 @RequestMapping("/")
 public class MainController {
     private final TaskRepository tasks;
+
+    @Value("${spring.profiles.active}")
+    private String profile;
+
     @Autowired
     public MainController(TaskRepository tasks) {
         this.tasks = tasks;
@@ -28,6 +33,7 @@ public class MainController {
         data.put("tasks",tasks.findAll());
 
         model.addAttribute("frontendData", data);
+        model.addAttribute("isDevelop","dev".equals(profile));
         return "index";
     }
 }

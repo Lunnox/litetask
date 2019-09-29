@@ -15,6 +15,8 @@
 
     import TaskRow from "components/TaskRow.vue";
     import TaskForm from "components/TaskForm.vue";
+    import taskApi from "api/taskresource";
+
     export default {
         name: "TasksList",
         components: {
@@ -37,7 +39,7 @@
                 this.task = task
             },
             deleteTask(task) {
-                this.$resource('/tasks/{id}').remove({id: task.id}).then(result => {
+                taskApi.remove(task.id).then(result => {
                     if (result.ok) {
                         this.tasks.splice(this.tasks.indexOf(task), 1)
                     }

@@ -8,7 +8,7 @@
 </template>
 
 <script>
-    import {sendTask} from "utils/ws";
+    import taskApi from "api/taskresource";
 
 
     export default {
@@ -28,32 +28,33 @@
         },
         methods:{
             add() {
-                sendTask({id:this.id,theme: this.theme})
-                this.theme = ''
-                this.id = ''
-            }
-        /*     {
-                var task ={theme: this.theme}
+                const task ={id:this.id, theme: this.theme}
 
                 if (this.id){
-                    this.$resource('/tasks/{id}').update({id:this.id}, task).then(result=>
+                    taskApi.update( task).then(result=>
                         result.json().then(data=>{
-                            const index=getIndex(this.tasks,data.id)
+                            const index=this.tasks.findIndex(item => item.id===data.id)
 
                             this.tasks.splice(index,1,data)
 
                         })
                     )
                 }else {
-                    this.$resource('/tasks/{id}').save({}, task).then(result =>
+                    taskApi.add( task).then(result =>
                         result.json().then(data => {
-                            this.tasks.push(data)
-
+                            const index=this.tasks.findIndex(item => item.id===data.id)
+                            if(index>-1){
+                                this.tasks.splice(index,1,data)
+                            }else{
+                                this.tasks.push(data)
+                            }
                         })
                     )
                 }
 
-            }*/
+                this.theme = ''
+                this.id = ''
+            }
         }
     }
 </script>

@@ -3,25 +3,29 @@ package litequest.com.litetask.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import litequest.com.litetask.domain.Task;
 import litequest.com.litetask.domain.views.Views;
+import litequest.com.litetask.dto.EventType;
+import litequest.com.litetask.dto.ObjectType;
 import litequest.com.litetask.repository.TaskRepository;
+import litequest.com.litetask.utils.WsSender;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 
 @RestController
 @RequestMapping("tasks")
 public class TaskController {
     private final TaskRepository tasks;
+    private final BiConsumer<EventType, Task> sender;
 
     @Autowired
-    public TaskController(TaskRepository tasks) {
+    public TaskController(TaskRepository tasks, WsSender sender) {
         this.tasks = tasks;
+        this.sender = sender.getSender(ObjectType.TASK,Views.IdName.class);
     }
 
     @GetMapping
@@ -39,7 +43,12 @@ public class TaskController {
     @PostMapping
     public Task create(@RequestBody Task task){
         task.setCreateDate(LocalDateTime.now());
-        return tasks.save(task);
+        Task saveTask = tasks.save(task);
+
+        sender.accept(EventType.CREATE,saveTask);
+
+
+        return saveTask;
     }
 
     @PutMapping("{id}")
@@ -48,17 +57,15 @@ public class TaskController {
             @RequestBody Task task
     ){
         BeanUtils.copyProperties(task,taskFromDB,"id");
-        return tasks.save(taskFromDB);
+        Task updateTask = tasks.save(taskFromDB);
+        sender.accept(EventType.UPDATE,updateTask);
+        return updateTask;
     }
 
     @DeleteMapping("{id}")
     public void delete( @PathVariable("id") Task task){
-        tasks.delete(task);
-    }
 
-    @MessageMapping("/changeTask")
-    @SendTo("/topic/activity")
-    public Task changeTask(Task task){
-        return tasks.save(task);
+        tasks.delete(task);
+        sender.accept(EventType.REMOVE,task);
     }
 }

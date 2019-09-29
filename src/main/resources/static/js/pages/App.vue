@@ -20,7 +20,6 @@
 <script>
 
     import {addhandler} from "utils/ws";
-    import {getIndex} from "utils/collections";
     import TasksList from "components/TasksList.vue";
     export default {
         name: "App",
@@ -36,11 +35,24 @@
         },
         created() {
             addhandler(data =>{
-                let index = getIndex(this.tasks,data.id)
-                if(index>-1){
-                    this.tasks.splice(index,1,data)
-                } else{
-                    this.tasks.push(data)
+                if(data.objectType==='TASK'){
+                    let index =this.tasks.findIndex(item=> item.id===data.body.id)
+                    switch(data.eventType){
+                        case 'CREATE':
+                        case 'UPDATE':
+                            if (index>-1){
+                                this.tasks.splice(index,1,data.body)
+                            }else{
+                                this.tasks.push(data.body)
+                            }
+                            break
+                        case 'REMOVE':
+                            this.tasks.splice(index,1)
+                            break
+                        default: console.log(`Undefined event type "${data.eventType}"`)
+                    }
+                }else{
+                    console.log(`Undefined object type "${data.objectType}"`)
                 }
             })
         }

@@ -1,61 +1,56 @@
 package litequest.com.litetask.controller;
 
-import litequest.com.litetask.exception.NotFoundException;
+import com.fasterxml.jackson.annotation.JsonView;
+import litequest.com.litetask.domain.Task;
+import litequest.com.litetask.domain.views.Views;
+import litequest.com.litetask.repository.TaskRepository;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 
 @RestController
 @RequestMapping("tasks")
 public class TaskController {
-    private int counter = 4;
+    private final TaskRepository tasks;
 
-    public List<Map<String,String>> tasks = new ArrayList<Map<String, String>>(){{
-        add(new HashMap<String,String >(){{put("id","1"); put("theme","theme 1");}});
-        add(new HashMap<String,String >(){{put("id","2"); put("theme","theme 2");}});
-        add(new HashMap<String,String >(){{put("id","3"); put("theme","theme 3");}});
-    }};
+    @Autowired
+    public TaskController(TaskRepository tasks) {
+        this.tasks = tasks;
+    }
+
     @GetMapping
-    public List<Map<String,String>> list(){
-        return tasks;
+    @JsonView(Views.IdName.class)
+    public List<Task> getTasks(){
+        return tasks.findAll();
     }
 
     @GetMapping("{id}")
-    public Map<String,String> getOne(@PathVariable String id){
-        return getTask(id);
-    }
-
-    private Map<String, String> getTask(@PathVariable String id) {
-        return tasks.stream()
-                .filter(task -> task.get("id").equals(id))
-                .findFirst()
-                .orElseThrow(NotFoundException::new);
-    }
-
-    @PostMapping
-    public Map<String,String> create(@RequestBody Map<String,String> task){
-        task.put("id", String.valueOf(counter++));
-        tasks.add(task);
+    @JsonView(Views.Full.class)
+    public Task getTask(@PathVariable("id") Task task){
         return task;
     }
 
+    @PostMapping
+    public Task create(@RequestBody Task task){
+        task.setCreateDate(LocalDateTime.now());
+        return tasks.save(task);
+    }
+
     @PutMapping("{id}")
-    public Map<String,String> update(@PathVariable String id, @RequestBody Map<String,String> task){
-        Map<String,String> taskFromDB = getTask(id);
-
-        taskFromDB.putAll(task);
-        taskFromDB.put("id",id);
-
-        return taskFromDB;
+    public Task update(
+            @PathVariable("id") Task taskFromDB,
+            @RequestBody Task task
+    ){
+        BeanUtils.copyProperties(task,taskFromDB,"id");
+        return tasks.save(taskFromDB);
     }
 
     @DeleteMapping("{id}")
-    public void delete(@PathVariable String id){
-        Map<String,String> task = getTask(id);
-        tasks.remove(task);
+    public void delete( @PathVariable("id") Task task){
+        tasks.delete(task);
     }
 }

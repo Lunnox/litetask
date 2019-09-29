@@ -96,13 +96,6 @@ Vue.component('tasks-list', {
                     'v-bind:editMethod="editMethod"' +
                     'v-bind:tasks="tasks"/>' +
         '</div>',
-    created: function () {
-        taskAPI.get().then(result=>
-            result.json().then(data =>
-                data.forEach(task => this.tasks.push(task))
-            )
-        )
-    },
     methods:{
         editMethod:function (task) {
             this.task=task;
@@ -112,8 +105,23 @@ Vue.component('tasks-list', {
 
 var app = new Vue({
     el: '#app',
-    template:'<tasks-list :tasks="tasks" />',
+    template:
+        '<div>' +
+            '<div v-if="!profile">Need auth in <a href="/login">Google</a></div>' +
+            '<div v-else>' +
+                '<div>{{profile.name}}&nbsp; <a href="/logout">logout</a></div>' +
+                '<tasks-list  :tasks="tasks" />' +
+            '</div>' +
+        '</div>',
     data: {
-        tasks: []
+        tasks: frontendData.tasks,
+        profile: frontendData.profile
+    },
+    created: function () {
+        // taskAPI.get().then(result=>
+        //     result.json().then(data =>
+        //         data.forEach(task => this.tasks.push(task))
+        //     )
+        // )
     }
 });

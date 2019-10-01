@@ -11,17 +11,20 @@
 </template>
 
 <script>
+    import {mapActions} from 'vuex'
+
     export default {
         name: "TaskRow",
-        props:['task','editTask','deleteTask','tasks'],
+        props:['task','editTask'],
 
 
         methods:{
+            ...mapActions(['deleteTaskAction']),
             edit() {
                 this.editTask(this.task)
             },
             del() {
-                this.deleteTask(this.task)
+                this.deleteTaskAction(this.task)
             }
         }
     }

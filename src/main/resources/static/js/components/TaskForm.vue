@@ -8,12 +8,11 @@
 </template>
 
 <script>
-    import taskApi from "api/taskresource";
-
+    import {mapActions} from 'vuex'
 
     export default {
         name: "TaskForm",
-        props:['tasks','newTask'],
+        props:['newTask'],
         data() {
             return {
                 theme: '',
@@ -27,31 +26,14 @@
             }
         },
         methods:{
+            ...mapActions(['addTaskAction','updateTaskAction']),
             add() {
                 const task ={id:this.id, theme: this.theme}
-
                 if (this.id){
-                    taskApi.update( task).then(result=>
-                        result.json().then(data=>{
-                            const index=this.tasks.findIndex(item => item.id===data.id)
-
-                            this.tasks.splice(index,1,data)
-
-                        })
-                    )
+                    this.updateTaskAction( task)
                 }else {
-                    taskApi.add( task).then(result =>
-                        result.json().then(data => {
-                            const index=this.tasks.findIndex(item => item.id===data.id)
-                            if(index>-1){
-                                this.tasks.splice(index,1,data)
-                            }else{
-                                this.tasks.push(data)
-                            }
-                        })
-                    )
+                    this.addTaskAction( task)
                 }
-
                 this.theme = ''
                 this.id = ''
             }

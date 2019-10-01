@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Table
 @ToString(of = {"id","theme"})
 @EqualsAndHashCode(of = {"id"})
+
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,6 +27,19 @@ public class Task {
     @Column(updatable = false)
     @JsonView(Views.Full.class)
     private LocalDateTime createDate;
+
+
+    //Необходимо выделить для иного использования
+
+    @JsonView(Views.Full.class)
+    private String link;
+    @JsonView(Views.Full.class)
+    private String linkTitle;
+    @JsonView(Views.Full.class)
+    private String linkDescription;
+    @JsonView(Views.Full.class)
+    private String linkCover;
+
 
     public Long getId() {
         return id;
@@ -49,5 +63,37 @@ public class Task {
 
     public void setCreateDate(LocalDateTime createDate) {
         this.createDate = createDate;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
+    public String getLinkTitle() {
+        return linkTitle;
+    }
+
+    public void setLinkTitle(String linkTitle) {
+        this.linkTitle = linkTitle;
+    }
+
+    public String getLinkDescription() {
+        return linkDescription;
+    }
+
+    public void setLinkDescription(String linkDescription) {
+        this.linkDescription = linkDescription;
+    }
+
+    public String getLinkCover() {
+        return linkCover;
+    }
+
+    public void setLinkCover(String linkCover) {
+        this.linkCover = linkCover;
     }
 }

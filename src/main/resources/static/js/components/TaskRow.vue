@@ -3,6 +3,7 @@
         <v-card-text primary-title>
             {{task.theme}}
         </v-card-text>
+        <media v-if="task.link" :task="task"></media>
         <v-card-actions>
             <v-btn small text @click="edit">edit</v-btn>
             <v-btn  @click="del">del</v-btn>
@@ -13,11 +14,13 @@
 <script>
     import {mapActions} from 'vuex'
 
+    import Media from "components/media/Media.vue";
+
     export default {
         name: "TaskRow",
+        components: {Media},
         props:['task','editTask'],
-
-
+        component:{Media},
         methods:{
             ...mapActions(['deleteTaskAction']),
             edit() {

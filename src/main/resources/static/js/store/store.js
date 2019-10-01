@@ -7,7 +7,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         tasks,
-        profile: frontendData.profile
+        ...frontendData
     },
     getters: {
         sortedTasks: state => (state.tasks ||[]).sort((a, b)=> -(a.id - b.id))
@@ -37,7 +37,19 @@ export default new Vuex.Store({
                     ...state.tasks.slice(index+1)
                 ]
             }
-
+        },
+        addTaskPageMutation(state, tasks){
+            const targetTasks = state.tasks.concat(tasks).reduce((res,val)=>{
+                res[val.id]=val
+                return res
+            },{})
+            state.tasks=Object.values(targetTasks)
+        },
+        updateTotalPagesMutation(state,totalPage){
+            state.totalPage=totalPage
+        },
+        updateCurrentPageMutation(state, currentPage){
+            state.currentPage=currentPage
         },
     },
     actions:{
@@ -57,15 +69,21 @@ export default new Vuex.Store({
             const data=  await result.json()
 
             commit('updateTaskMutation',data)
-
-
         },
         async deleteTaskAction({commit}, task){
             const result = await taskApi.remove(task.id)
             if (result.ok) {
                 commit('deleteTaskMutation',task)
             }
-        }
+        },
+        async loadPageAction({commit,state}){
+            const response = await taskApi.page(state.currentPage+1)
+            const data =await response.json()
+
+            commit('addTaskPageMutation',data.tasks)
+            commit('updateTotalPagesMutation',data.totalPage)
+            commit('updateCurrentPageMutation',Math.min(data.currentPage,data.totalPage))
+        },
 
     }
 })

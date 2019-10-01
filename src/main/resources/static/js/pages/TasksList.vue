@@ -7,6 +7,7 @@
                     v-bind:key="`task.id-${index}`"
                     v-bind:editTask="editTask"
                     />
+            <lazy-loader></lazy-loader>
         </v-layout>
     </v-container>
 </template>
@@ -16,10 +17,12 @@
     import TaskRow from "components/TaskRow.vue";
     import TaskForm from "components/TaskForm.vue";
     import {mapGetters} from 'vuex'
+    import LazyLoader from "components/LazyLoader.vue";
 
     export default {
         name: "TasksList",
         components: {
+            LazyLoader,
             TaskRow,
             TaskForm
         },

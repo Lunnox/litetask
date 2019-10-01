@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @Table
 @ToString(of = {"id","theme"})
 @EqualsAndHashCode(of = {"id"})
-
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -40,6 +39,10 @@ public class Task {
     @JsonView(Views.Full.class)
     private String linkCover;
 
+    @ManyToOne
+    @JoinColumn(name ="user_id" )
+    @JsonView(Views.Full.class)
+    private User author;
 
     public Long getId() {
         return id;
@@ -95,5 +98,13 @@ public class Task {
 
     public void setLinkCover(String linkCover) {
         this.linkCover = linkCover;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
     }
 }

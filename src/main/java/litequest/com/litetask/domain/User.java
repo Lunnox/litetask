@@ -1,6 +1,8 @@
 package litequest.com.litetask.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonView;
+import litequest.com.litetask.domain.views.Views;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,8 +16,11 @@ import java.time.LocalDateTime;
 @Table(name = "users")
 public class User {
     @Id
+    @JsonView(Views.Full.class)
     private String id;
+    @JsonView(Views.Full.class)
     private String name;
+    @JsonView(Views.Full.class)
     private String userpic;
     private String email;
     private String gender;

@@ -1,6 +1,6 @@
 <template>
     <v-layout row>
-    <v-text-field placeholder="Theme task" v-model="theme" label="New Task"/>
+    <v-text-field placeholder="Theme task" v-model="theme" label="New Task" @keyup.enter="add"/>
         <v-btn  @click="add">
             Add
         </v-btn>

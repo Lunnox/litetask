@@ -2,6 +2,7 @@ package litequest.com.litetask.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import litequest.com.litetask.domain.Task;
+import litequest.com.litetask.domain.User;
 import litequest.com.litetask.domain.views.Views;
 import litequest.com.litetask.dto.EventType;
 import litequest.com.litetask.dto.MetaDto;
@@ -14,6 +15,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -55,11 +57,15 @@ public class TaskController {
     }
 
     @PostMapping
-    public Task create(@RequestBody Task task) throws IOException {
+    public Task create(
+            @RequestBody Task task,
+            @AuthenticationPrincipal User user
+
+    ) throws IOException {
         task.setCreateDate(LocalDateTime.now());
         //убрать в другой функционал
         fillMeta(task);
-
+        task.setAuthor(user);
         Task saveTask = tasks.save(task);
 
         sender.accept(EventType.CREATE,saveTask);

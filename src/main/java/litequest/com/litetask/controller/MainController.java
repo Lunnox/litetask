@@ -34,6 +34,7 @@ public class MainController {
     public MainController(TaskService taskService, ObjectMapper mapper) {
         this.taskService = taskService;
         this.writer = mapper.setConfig(mapper.getSerializationConfig()).writerWithView(Views.Full.class);
+        System.out.println(this.profile.toString());
 
     }
 

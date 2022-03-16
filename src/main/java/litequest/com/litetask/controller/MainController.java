@@ -40,6 +40,7 @@ public class MainController {
 
     @GetMapping
     public String main(Model model, @AuthenticationPrincipal User user) throws JsonProcessingException {
+        System.out.println(user.toString());
         HashMap<Object, Object> data = new HashMap<>();
         if(user!=null) {
             PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE, Sort.by(Sort.Direction.DESC, "id"));

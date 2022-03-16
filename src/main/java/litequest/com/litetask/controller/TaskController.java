@@ -55,7 +55,7 @@ public class TaskController {
             @PathVariable("id") Task taskFromDB,
             @RequestBody Task task
     ) throws IOException {
-        return taskService.update(taskFromDB,task);
+       
     }
 
     @DeleteMapping("{id}")

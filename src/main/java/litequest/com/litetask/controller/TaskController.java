@@ -58,8 +58,4 @@ public class TaskController {
        
     }
 
-    @DeleteMapping("{id}")
-    public void delete( @PathVariable("id") Task task){
-        taskService.delete(task);
-    }
 }

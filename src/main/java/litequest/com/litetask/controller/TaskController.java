@@ -57,9 +57,4 @@ public class TaskController {
     ) throws IOException {
        
     }
-
-    @DeleteMapping("{id}")
-    public void delete( @PathVariable("id") Task task){
-        taskService.delete(task);
-    }
 }
